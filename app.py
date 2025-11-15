@@ -4,14 +4,17 @@ This is the main Flask app that serves the web interface and provides prediction
 """
 
 from flask import Flask, render_template, request, jsonify
-from flask_cors import CORS
+try:
+    from flask_cors import CORS
+except Exception:
+    CORS = None
 import pickle
 import numpy as np
 import os
 from pathlib import Path
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS and CORS(app)  # Enable CORS for all routes if installed
 
 # Load the trained model, scaler, and feature names
 MODEL_PATH = 'models/heart_disease_model.pkl'

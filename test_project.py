@@ -28,9 +28,7 @@ def test_project_structure():
         'runtime.txt',
         '.gitignore',
         '.env.example',
-        'templates/index.html',
-        'static/style.css',
-        'static/script.js'
+        'streamlit_app.py'
     ]
     
     all_exist = True
@@ -151,31 +149,25 @@ def test_html_structure():
     print("\n" + "=" * 60)
     print("Testing HTML Structure...")
     print("=" * 60)
-    
+    print('Skipping HTML structure tests: using Streamlit frontend instead')
     try:
-        # Read HTML as UTF-8 to support unicode characters
-        with open('templates/index.html', 'r', encoding='utf-8') as f:
+        with open('streamlit_app.py', 'r', encoding='utf-8') as f:
             content = f.read()
-            
         checks = {
-            'DOCTYPE': '<!DOCTYPE html>' in content,
-            'Flask Templates': '{{ url_for' in content,
-            'Form': '<form' in content,
-            'Prediction Section': 'predictionForm' in content,
-            'Footer': '<footer' in content
+            'streamlit import': 'import streamlit' in content or 'import streamlit as st' in content,
+            'form present': 'form' in content,
+            'predict usage': 'predict' in content or 'predict_proba' in content,
         }
-        
         all_ok = True
         for check, result in checks.items():
             status = "✓" if result else "✗"
             print(f"{status} {check}")
             if not result:
                 all_ok = False
-        
         print("\nResult: " + ("PASSED" if all_ok else "FAILED"))
         return all_ok
     except Exception as e:
-        print(f"✗ Error reading HTML: {e}")
+        print(f"✗ Error reading Streamlit app: {e}")
         return False
 
 
@@ -185,31 +177,8 @@ def test_css_file():
     print("Testing CSS File...")
     print("=" * 60)
     
-    try:
-        # Read CSS as UTF-8
-        with open('static/style.css', 'r', encoding='utf-8') as f:
-            content = f.read()
-        
-        checks = {
-            'Root variables': '--primary-color' in content,
-            'Navbar styles': '.navbar' in content,
-            'Hero section': '.hero' in content,
-            'Form styles': '.form-' in content,
-            'Responsive design': '@media' in content
-        }
-        
-        all_ok = True
-        for check, result in checks.items():
-            status = "✓" if result else "✗"
-            print(f"{status} {check}")
-            if not result:
-                all_ok = False
-        
-        print("\nResult: " + ("PASSED" if all_ok else "FAILED"))
-        return all_ok
-    except Exception as e:
-        print(f"✗ Error reading CSS: {e}")
-        return False
+    print('Skipping CSS tests: Streamlit app uses its own styling')
+    return True
 
 
 def test_javascript_file():
@@ -218,31 +187,8 @@ def test_javascript_file():
     print("Testing JavaScript File...")
     print("=" * 60)
     
-    try:
-        # Read JS as UTF-8 to support emoji and unicode
-        with open('static/script.js', 'r', encoding='utf-8') as f:
-            content = f.read()
-        
-        checks = {
-            'Form submission': 'handleFormSubmit' in content,
-            'Validation': 'validateFormData' in content,
-            'Result display': 'displayResult' in content,
-            'Error handling': 'displayError' in content,
-            'API call': 'fetch' in content
-        }
-        
-        all_ok = True
-        for check, result in checks.items():
-            status = "✓" if result else "✗"
-            print(f"{status} {check}")
-            if not result:
-                all_ok = False
-        
-        print("\nResult: " + ("PASSED" if all_ok else "FAILED"))
-        return all_ok
-    except Exception as e:
-        print(f"✗ Error reading JavaScript: {e}")
-        return False
+    print('Skipping JS tests: Streamlit app replaces custom JS')
+    return True
 
 
 def main():
@@ -265,9 +211,7 @@ def main():
     if results['Model Files']:
         results['Model Prediction'] = test_model_prediction()
     
-    results['HTML'] = test_html_structure()
-    results['CSS'] = test_css_file()
-    results['JavaScript'] = test_javascript_file()
+    results['Streamlit App'] = test_html_structure()
     
     # Print summary
     print("\n" + "=" * 60)
